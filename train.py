@@ -65,3 +65,16 @@ environ_arg.add_argument('--accumulated_validation_miou',type=int,default=0,help
 
 args = parser.parse_arg()
 
+# =============================================================================
+# # defining global varialbes
+# =============================================================================
+
+os.environ['CUDA_VISIBLE_DEVICES'] = str(args.gpu_id)
+crop_size= args.crop_size
+
+LOG_FOLDER = './tensor_board_logs'
+TRAIN_DATASET_DIR = './dataset/tfrecords'
+TRAIN_FILE = 'train.tfrecords'
+VALIDATION_FILE = 'validation.tfrecords'
+
+resnet_checkpoints_path = './resnet/checkpoints/'
