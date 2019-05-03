@@ -30,4 +30,16 @@ annotations_folder_name_aug_voc = 'cls/'
 images_dir_aug_voc = os.path.join(base_dataset_dir_aug_voc,images_folder_name_aug_voc)
 annotations_dir_aug_voc = os.path.join(base_dataset_dir_aug_voc,annotations_folder_name_aug_voc)
 
+# =============================================================================
+# # defining function to get the list of all images saved in custom_train.txt
+# =============================================================================
+def get_files_list(filename):
+    
+    with open(filename,'r') as f:
+        images_filename_list = [line.strip() for line in f.readlines()]
+    return images_filename_list
+
+
+images_filename_list = get_files_list('custom_train.txt')
+print('Total number of training images',len(images_filename_list))
 
