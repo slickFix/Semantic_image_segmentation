@@ -7,6 +7,8 @@ Created on Thu May  2 09:55:58 2019
 """
 
 import os
+import numpy as np
+import tensorflow as tf
 
 
 
@@ -24,7 +26,7 @@ annotations_dir_voc = os.path.join(base_dataset_dir_voc,annotations_folder_name_
 # # defining base paths for pascal augmented VOC images
 # download: http://home.bharathh.info/pubs/codes/SBD/download.html
 # =============================================================================
-base_dataset_dir_aug_voc = '<pascal/augmented/VOC/images/path>/benchmark_RELEASE/dataset'
+base_dataset_dir_aug_voc = './benchmark_RELEASE/dataset'
 images_folder_name_aug_voc = 'img/'
 annotations_folder_name_aug_voc = 'cls/'
 images_dir_aug_voc = os.path.join(base_dataset_dir_aug_voc,images_folder_name_aug_voc)
@@ -42,4 +44,3 @@ def get_files_list(filename):
 
 images_filename_list = get_files_list('custom_train.txt')
 print('Total number of training images',len(images_filename_list))
-
