@@ -44,3 +44,23 @@ def get_files_list(filename):
 
 images_filename_list = get_files_list('custom_train.txt')
 print('Total number of training images',len(images_filename_list))
+
+# =============================================================================
+# # defining train and val variables
+# =============================================================================
+
+# shuffling array and separating 10% for validation
+np.random.shuffle(images_filename_list)
+val_images_filename_list = images_filename_list[:int(0.10*len(images_filename_list))]
+train_images_filename_list = images_filename_list[int(0.10*len(images_filename_list)):]
+
+TRAIN_DATASET_DIR = './tfrecords'
+if not os.path.exists(TRAIN_DATASET_DIR):
+    os.mkdir(TRAIN_DATASET_DIR)
+    
+TRAIN_FILE = 'train.tfrecords'
+VAL_FILE = 'validation.tfrecords'
+
+train_writer = tf.python_io.TFRecordWriter(os.path.join(TRAIN_DATASET_DIR,TRAIN_FILE))
+val_writer = tf.python_io.TFRecordWriter(os.path.join(TRAIN_DATASET_DIR,VAL_FILE))
+
