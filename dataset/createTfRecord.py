@@ -7,10 +7,35 @@ Created on Thu May  2 09:55:58 2019
 """
 
 import os
+import requests
+import tarfile
 import numpy as np
 import tensorflow as tf
 
 
+# =============================================================================
+# # Downloading dataset
+# =============================================================================
+dataset_url = "https://www2.eecs.berkeley.edu/Research/Projects/CS/vision/grouping/semantic_contours/benchmark.tgz"
+download_filename = 'augmented_voc.tar.gz'
+
+print("Downloading dataset to the current path")
+
+r = requests.get(dataset_url,stream = True)
+
+with open(download_filename,'wb') as f:    
+    for chunk in r.iter_content(chunk_size=1024*1024):
+        if chunk:            
+            f.write(chunk)
+
+# extracting dataset from tar file
+donwload_file_dir = os.path.join('./',download_filename)        
+tarfile_ = tarfile.open(donwload_file_dir)
+tarfile_.extractall()
+tarfile_.close()
+
+# removing the downloaded file
+os.remove(download_filename)
 
 # =============================================================================
 # # defining base paths for pascal the original VOC dataset training images
