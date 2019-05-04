@@ -11,7 +11,9 @@ import requests
 import tarfile
 import numpy as np
 import tensorflow as tf
+import scipy.io as scio
 
+from imageio import imread
 
 # =============================================================================
 # # Downloading dataset
@@ -89,3 +91,17 @@ VAL_FILE = 'validation.tfrecords'
 train_writer = tf.python_io.TFRecordWriter(os.path.join(TRAIN_DATASET_DIR,TRAIN_FILE))
 val_writer = tf.python_io.TFRecordWriter(os.path.join(TRAIN_DATASET_DIR,VAL_FILE))
 
+# =============================================================================
+# # defining utility functions
+# =============================================================================
+def _bytes_features(value):
+    return tf.train.Feature(bytes_list = tf.train.BytesList(value=[value]))
+
+def _int64_feature(value):
+    return tf.train.Feature(int64_list= tf.train.Int64List(value = [value]))
+
+def read_annotation_from_mat_file(annotations_dir,images_name):
+    annotaions_path = os.path.join(annotations_dir,(images_name.strip()+'.mat'))
+    mat = spio.loadmat(annotaions_path)
+    img = mat["GTcls"]["Segmentation'][0][0]
+    return img
