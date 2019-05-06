@@ -103,5 +103,11 @@ def _int64_feature(value):
 def read_annotation_from_mat_file(annotations_dir,images_name):
     annotaions_path = os.path.join(annotations_dir,(images_name.strip()+'.mat'))
     mat = spio.loadmat(annotaions_path)
-    img = mat["GTcls"]["Segmentation'][0][0]
+    img = mat["GTcls"]['Segmentation'][0][0]
     return img
+
+# =============================================================================
+# # defining main function for dataset tfrecord format creation
+# =============================================================================
+def create_tfrecord_dataset(filename_list,writer):
+    
