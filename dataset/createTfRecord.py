@@ -111,3 +111,49 @@ def read_annotation_from_mat_file(annotations_dir,images_name):
 # =============================================================================
 def create_tfrecord_dataset(filename_list,writer):
     
+    # create tfrecord
+    read_imgs_counter = 0 
+    for i,image_name in enumerate(filename_list):
+        
+        try:
+            image_np = imread(os.path.join(images_dir_aug_voc,image_name.strip()+'.jpg'))
+        
+        except FileNotFoundError:
+            try:
+                # read from Pascal Voc path
+                image_np = imread(os.path.join(images_dir_voc,image_name.strip()+'.jpg'))
+            except FileNotFoundError:
+                print("File image: ",image_name.strip()," not found!!)
+                continue
+        
+        try:
+            annotation_np = read_annotation_from_mat_file(annotations_dir_aug_voc,image_name)
+        except FileNotFoundError:
+            try:
+                # read from Pascal VOC path
+                annotation_np = imread(os.path.join(annotations_dir_voc,image_name.strip()+'.png'))
+            
+            except FileNotFoundError:
+                print("File annotation: ",image_name.strip()," not found!!)
+                continue
+        
+        read_imgs_counter+=1
+        image_h = image_np.shape[0]
+        image_w = image_np.shape[1]
+        
+        img_raw = image_np.tostring()
+        annotation_raw = annotation_np.tostring()
+        
+        example = tf.train.Example(features=tf.train.Features(feature={
+                'height':_int64_feature(image_h),
+                'width':_int64_feature(image_w),
+                'image_raw':_bytes_features(img_raw),
+                'annotation_raw':_bytes_features(annotation_raw)}))
+        
+        writer.write(example.SerializeToString())
+    
+    print("End of TfRecord. Total images written: ",read_imgs_counter)
+    writer.close()
+
+
+            
