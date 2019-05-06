@@ -156,4 +156,9 @@ def create_tfrecord_dataset(filename_list,writer):
     writer.close()
 
 
-            
+# create training dataset
+create_tfrecord_dataset(train_images_filename_list,train_writer)
+
+# create validation dataset
+create_tfrecord_dataset(val_images_filename_list,val_writer)
+
