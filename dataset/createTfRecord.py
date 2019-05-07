@@ -77,6 +77,7 @@ print('Total number of training images',len(images_filename_list))
 # =============================================================================
 
 # shuffling array and separating 10% for validation
+np.random.seed(2019)
 np.random.shuffle(images_filename_list)
 val_images_filename_list = images_filename_list[:int(0.10*len(images_filename_list))]
 train_images_filename_list = images_filename_list[int(0.10*len(images_filename_list)):]
