@@ -123,7 +123,7 @@ def create_tfrecord_dataset(filename_list,writer):
                 # read from Pascal Voc path
                 image_np = imread(os.path.join(images_dir_voc,image_name.strip()+'.jpg'))
             except FileNotFoundError:
-                print("File image: ",image_name.strip()," not found!!)
+                print("File image: ",image_name.strip()," not found!!")
                 continue
         
         try:
@@ -134,7 +134,7 @@ def create_tfrecord_dataset(filename_list,writer):
                 annotation_np = imread(os.path.join(annotations_dir_voc,image_name.strip()+'.png'))
             
             except FileNotFoundError:
-                print("File annotation: ",image_name.strip()," not found!!)
+                print("File annotation: ",image_name.strip()," not found!!")
                 continue
         
         read_imgs_counter+=1
