@@ -1,2 +1,3 @@
 /resnet/checkpoints
 /dataset/bench*
+/dataset/tfrecords
