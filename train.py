@@ -78,3 +78,20 @@ TRAIN_FILE = 'train.tfrecords'
 VALIDATION_FILE = 'validation.tfrecords'
 
 resnet_checkpoints_path = './resnet/checkpoints/'
+
+
+# =============================================================================
+# # defining training and validation dataset
+# =============================================================================
+
+training_filenames = [os.path.join(TRAIN_DATASET_DIR,TRAIN_FILE)]
+training_dataset = tf.data.TFRecordDataset(training_filenames)
+training_dataset = training_dataset.map(tf_record_parser)
+training_dataset = training_dataset.map(rescale_image_and_annotation_by_factor)
+training_dataset = training_dataset.map(distort_randomly_image_color)
+training_dataset = training_dataset.map(lambda image,annotation,image_shape:scale_image_with_crop_padding(image,annotation,image_shape,crop_size))
+training_dataset = training_dataset.map(random_flip_image_and_annotation) # Parse the record in tensors
+training_dataset = training_dataset.repeat()  # no of epochs
+training_dataset = training_dataset.shuffle(buffer_size=500)
+training_dataset = training_dataset.batch(args.batch_size)
+
