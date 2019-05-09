@@ -12,6 +12,9 @@ import numpy as np
 import os
 import json
 
+from preprocessing.read_data import download_resnet_checkpoint_if_necessary,tf_record_parser
+
+
 # =============================================================================
 # #list of classes for training
 # =============================================================================
@@ -78,6 +81,8 @@ TRAIN_FILE = 'train.tfrecords'
 VALIDATION_FILE = 'validation.tfrecords'
 
 resnet_checkpoints_path = './resnet/checkpoints/'
+download_resnet_checkpoint_if_necessary(resnet_checkpoints_path, args.resnet_model)
+
 
 
 # =============================================================================
