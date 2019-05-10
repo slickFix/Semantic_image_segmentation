@@ -1,3 +1,4 @@
 /resnet/checkpoints
 /dataset/bench*
 /dataset/tfrecords
+/preprocessing/__pyca*
