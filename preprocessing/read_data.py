@@ -58,4 +58,26 @@ def tf_record_parser(record):
     annotation = tf.to_int32(annotation)
     
     return tf.to_float(image),annotation,(height,width)
+
+def rescale_image_and_annotation_by_factor(image,annotation,image_shape,min_scale = 0.5,max_scale=2):
+    
+    
+    # data augmentation is done by randomly scaling the input images (from 0.5 to 2) during training
+    
+    input_shape = tf.shape(image)[0:2]
+    input_shape_float = tf.to_float(input_shape)
+    
+    
+    scale = tf.random_uniform(shape = [1],minval=min_scale,maxval=max_scale)
+    
+    scaled_input_shape = tf.int32(tf.round(input_shape_float*scale))
+    
+    image =tf.image.resize_images(image,scaled_input_shape,method=tf.image.ResizeMethod.BILINEAR)
+    
+    # use nearest neighbour for annotations resizeing in order to keep proper values
+    
+    annotation = tf.image.resize_images(annotation,scaled_input_shape,method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
+    
+    return image,annotation,image_shape
+    
     

@@ -12,7 +12,8 @@ import numpy as np
 import os
 import json
 
-from preprocessing.read_data import download_resnet_checkpoint_if_necessary,tf_record_parser
+from preprocessing.read_data import download_resnet_checkpoint_if_necessary,tf_record_parser,rescale_image_and_annotation_by_factor
+
 
 
 # =============================================================================
