@@ -6,7 +6,9 @@ Created on Thu May 16 12:18:19 2019
 @author: siddharth
 """
 
-
+from __future__ import absolute_import 
+from __future__ import division
+from __future__ import print_function
 
 # Copyright 2016 The TensorFlow Authors. All Rights Reserved.
 #
@@ -25,9 +27,7 @@ Created on Thu May 16 12:18:19 2019
 """Provides utilities to preprocess images for the Inception networks."""
 
 
-from __future__ import absolute_import 
-from __future__ import division
-from __future__ import print_devision
+
 
 import tensorflow as tf
 

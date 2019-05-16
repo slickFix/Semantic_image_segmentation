@@ -12,7 +12,7 @@ import tarfile
 
 import tensorflow as tf
 
-from preprocessing.inception_preprocessing import apply_with_ramdom_selector,distort_color
+from preprocessing.inception_preprocessing import apply_with_random_selector,distort_color
 
 def download_resnet_checkpoint_if_necessary(resnet_checkpoints_path,resnet_model_name):
     
