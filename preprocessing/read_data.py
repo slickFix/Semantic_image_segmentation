@@ -12,6 +12,8 @@ import tarfile
 
 import tensorflow as tf
 
+from preprocessing.inception_preprocessing import apply_with_ramdom_selector,distort_color
+
 def download_resnet_checkpoint_if_necessary(resnet_checkpoints_path,resnet_model_name):
     
     if not os.path.exists(resnet_checkpoints_path):
