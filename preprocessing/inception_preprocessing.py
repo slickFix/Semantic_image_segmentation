@@ -90,3 +90,24 @@ def distort_color(image,color_ordering=0,fast_mode = True,scope = None):
             
      # The random_* ops do not necessarily clamp.
     return tf.clip_by_value(image, 0.0, 1.0)
+
+
+def apply_with_random_selector(x,func,num_cases):
+    
+    """ Computes func(x,sel) with sel sampled from [0...num_cases-1]
+    
+    Args:
+        x: input Tensor.
+        func: Python function to apply.
+        num_cases: Python int32, number of cases to sample sel from.
+    
+    Returns:
+        The result of func(x, sel), where func receives the value of the
+        selector as a python integer, but sel is sampled dynamically.
+    """
+    
+    sel = tf.random_uniform([],maxval=num_cases,dtype=tf.int32)
+    
+    # Passing real x to only one of the 'func' calls 
+    
+    return control_flow_ops.merge([func(control_flow_ops.switch(x,tf.equal(sel,case))[1],case) for case in range(num_cases)])[0]
