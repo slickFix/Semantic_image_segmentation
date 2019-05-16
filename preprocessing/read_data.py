@@ -80,4 +80,33 @@ def rescale_image_and_annotation_by_factor(image,annotation,image_shape,min_scal
     
     return image,annotation,image_shape
     
+def distort_randomly_image_color(image_tensor,annotation_tensor,image_shape):
+    
+    # Accepts image tensor(w,h,3) and returns color distorted image.
+    # Performs random brightness, saturation, hue, contrast change as it is performed for inception model training in TF-slim.
+    # All the parameters of random variables are originally preserved.
+    # Works in slow and fast mode. Slow mode performs only saturation and brightness random change.
+    
+    # returns img_float_distorted_original_range: Tensor of size(width,height,3) of type tf.float
+    #         Image tensor with distorted color in [0,255] intensity range
+    
+    
+    fast_mode = False
+    
+    # Normalizing the image 
+    img_float_zero_one_range = tf.to_float(image_tensor)/255
+    
+    # Randomly distort the color of image. There are 4 ways to do it.
+    # Credit: TF-Slim
+    # https://github.com/tensorflow/models/blob/master/slim/preprocessing/inception_preprocessing.py#L224
+    # Most probably the inception models were trainined using this color augmentation:
+    # https://github.com/tensorflow/models/tree/master/slim#pre-trained-models
+    
+    
+    distorted_image = apply_with_random_selector(img_float_zero_one_range,
+                                                 lambda x,ordering: distort_color(x,ordering,fast_mode=fast_mode),num_classes=4)
+    
+    img_float_distorted_original_range = distorted_image * 255
+    
+    return img_float_distorted_original_range,annotation_tensor,image_shape
     
