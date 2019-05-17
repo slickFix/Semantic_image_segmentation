@@ -14,6 +14,31 @@ import tensorflow as tf
 
 from preprocessing.inception_preprocessing import apply_with_random_selector,distort_color
 
+
+def random_flip_image_and_annotation(image_tensor,annotation_tensor,image_shape):
+    """Accepts image tensor and annotation tensor and returns randomly flipped tensors of both.
+    The function performs random flip of image and annotation tensors with probability of 1/2
+    The flip is performed or not performed for image and annotation consistently, so that
+    annotation matches the image"""
+    
+    original_shape = tf.shape(annotation_tensor)
+    # ensure the annotation tensor has shape (width,height,1)
+    annotation_tensor = tf.cond(tf.rank(annotation_tensor)<3,
+                                lambda:tf.expand_dims(annotation_tensor,axis=2),
+                                lambda:annotation_tensor)
+    
+    random_var = tf.random_uniform(maxval=2,dtype=tf.int32,shape=[])
+    
+    randomly_flipped_img = tf.cond(pred=tf.equal(random_var,0),
+                                   true_fn=lambda:tf.image.flip_left_right(image_tensor),
+                                   false_fn=lambda:image_tensor)
+    
+    randomly_flipped_ann = tf.cond(pred=tf.equal(random_var,0),
+                                   true_fn=lambda:tf.image.flip_left_right(annotation_tensor),
+                                   false_fn=lambda:annotation_tensor)
+    
+    return randomly_flipped_img,tf.reshape(randomly_flipped_ann, original_shape, name="reshape_random_flip_image_and_annotation"),image_shape
+
 def download_resnet_checkpoint_if_necessary(resnet_checkpoints_path,resnet_model_name):
     
     if not os.path.exists(resnet_checkpoints_path):

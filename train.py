@@ -14,7 +14,7 @@ import json
 
 from preprocessing.read_data import download_resnet_checkpoint_if_necessary,\
                                     tf_record_parser,rescale_image_and_annotation_by_factor,\
-                                    distort_randomly_image_color
+                                    distort_randomly_image_color,random_flip_image_and_annotation
 
 
 
