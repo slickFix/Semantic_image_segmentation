@@ -137,3 +137,25 @@ def distort_randomly_image_color(image_tensor,annotation_tensor,image_shape):
     
     return img_float_distorted_original_range,annotation_tensor,image_shape
     
+
+def scale_image_with_crop_padding(image,annotation,image_shape,crop_size):
+    
+    image_croped = tf.image.resize_image_with_crop_or_pad(image,crop_size,crop_size)
+    
+    
+    # Shift all the classes by one -- to be able to differentiate
+    # between zeros representing padded values and zeros representing
+    # a particular semantic class.
+    
+    
+    annotation_shifted_classes = annotation + 1
+    
+    cropped_padded_annotation = tf.image.resize_image_with_crop_or_pad(annotation_shifted_classes,crop_size,crop_size)
+    
+    mask_out_number = 255
+    
+    annotation_additional_mask_out = tf.to_int32(tf.equal(cropped_padded_annotation,0))*(mask_out_number+1)
+    
+    cropped_padded_annotation = cropped_padded_annotation+annotation_additional_mask_out-1
+    
+    return image_croped,tf.squeeze(cropped_padded_annotation),image_shape
