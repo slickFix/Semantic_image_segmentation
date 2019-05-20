@@ -45,6 +45,7 @@ from preprocessing.read_data import download_resnet_checkpoint_if_necessary,\
 # 18=sofa
 # 19=train
 # 20=tv/monitor
+# 255 = unknown
 
 # =============================================================================
 # # defining argument parser
