@@ -112,3 +112,28 @@ validation_dataset = validation_dataset.map(tf_record_parser) # Parse the record
 validation_dataset = validation_dataset.map(lambda image,annotation,image_shape:scale_image_with_crop_padding(image,annotation,image_shape,crop_size))
 validation_dataset = validation_dataset.shuffle(buffer_size = 100)
 validation_dataset = validation_dataset.batch(args.batch_size)
+
+class_labels = [ v for v in range(args.number_of_classes+1)]
+class_labels[-1] = 255
+
+# =============================================================================
+# # =============================================================================
+# # # =============================================================================
+# # # # Forward Propogation
+# # # =============================================================================
+# # =============================================================================
+# =============================================================================
+
+# =============================================================================
+# # defining dataset Iterators
+# =============================================================================
+
+handle = tf.placeholder(tf.string,shape=[])
+
+iterator = tf.data.Iterator.from_string_handle(handle,training_dataset.output_types,training_dataset.output_shapes)
+
+batch_images_tf,batch_labels_tf,_ = iterator.get_next()
+
+training_iterator = training_dataset.make_initializable_iterator()
+validation_iterator = validation_dataset.make_initializable_iterator()
+
