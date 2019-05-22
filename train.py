@@ -11,6 +11,7 @@ import tensorflow as tf
 import numpy as np
 import os
 import json
+import network
 
 from preprocessing.read_data import download_resnet_checkpoint_if_necessary,\
                                     tf_record_parser,rescale_image_and_annotation_by_factor,\
@@ -116,13 +117,6 @@ validation_dataset = validation_dataset.batch(args.batch_size)
 class_labels = [ v for v in range(args.number_of_classes+1)]
 class_labels[-1] = 255
 
-# =============================================================================
-# # =============================================================================
-# # # =============================================================================
-# # # # Forward Propogation
-# # # =============================================================================
-# # =============================================================================
-# =============================================================================
 
 # =============================================================================
 # # defining dataset Iterators
@@ -137,3 +131,15 @@ batch_images_tf,batch_labels_tf,_ = iterator.get_next()
 training_iterator = training_dataset.make_initializable_iterator()
 validation_iterator = validation_dataset.make_initializable_iterator()
 
+# =============================================================================
+# # =============================================================================
+# # # =============================================================================
+# # # # Forward Propogation
+# # # =============================================================================
+# # =============================================================================
+# =============================================================================
+
+is_training_tf = tf.placeholder(tf.bool,shape=[])
+
+logits_tf = tf.cond(is_training_tf,true_fn=lambda:network.deeplab_v3(batch_images_tf,args,is_training=True,reuse = False),
+                    false_fn=lambda:network.deeplab_v3(batch_images_tf,args,is_training=False,reuse=True))
