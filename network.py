@@ -26,7 +26,13 @@ def deeplab_v3(inputs,args,is_training,reuse):
     with slim.arg_scope(resnet_utils.resnet_arg_scope(args.l2_regualrizer,is_training,
                                                       args.batch_norm_decay,
                                                       args.batch_norm_epsilon)):
-        resnet = getattr(resnet_v2,args.resnet_model)
+        
+        
+        # gets the same function as the resnet_model given in the args
+        # which is defined in resnet_v2.py(acting as object here)
+        
+        resnet = getattr(resnet_v2,args.resnet_model)    
+        
         _,end_points = resnet(inputs,args.number_of_classes,
                               is_training=is_training,
                               global_pool = False,
