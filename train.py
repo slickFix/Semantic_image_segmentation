@@ -18,7 +18,7 @@ from preprocessing.read_data import download_resnet_checkpoint_if_necessary,\
                                     distort_randomly_image_color,random_flip_image_and_annotation,\
                                     scale_image_with_crop_padding
                                     
-
+from preprocessing import training
 
 
 # =============================================================================
@@ -143,3 +143,13 @@ is_training_tf = tf.placeholder(tf.bool,shape=[])
 
 logits_tf = tf.cond(is_training_tf,true_fn=lambda:network.deeplab_v3(batch_images_tf,args,is_training=True,reuse = False),
                     false_fn=lambda:network.deeplab_v3(batch_images_tf,args,is_training=False,reuse=True))
+
+
+# get valid logits and labels (factor the 255 padded mask for cross enetropy)
+valid_labels_batch_tf,valid_logits_batch_tf = training.get_valid_logits_and_labels(
+        annotation_batch_tensor= batch_labels_tf,
+        logits_batch_tensor = logits_tf,
+        class_labels=class_labels)
+
+
+
