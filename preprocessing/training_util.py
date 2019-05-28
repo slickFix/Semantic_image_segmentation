@@ -3,9 +3,11 @@
 """
 Created on Mon May 27 18:13:23 2019
 
-code used from :-
-https://github.com/warmspringwinds/tf-image-segmentation/blob/master/tf_image_segmentation/utils/training.py
 """
+
+
+#code used from :-
+#https://github.com/warmspringwinds/tf-image-segmentation/blob/master/tf_image_segmentation/utils/training.py
 
 import tensorflow as tf
 from tensorflow.python.ops import control_flow_ops
