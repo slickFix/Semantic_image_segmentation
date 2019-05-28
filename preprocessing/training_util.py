@@ -44,6 +44,12 @@ def get_labels_from_annotation(annotation_tensor, class_labels):
     valid_entries_class_labels = class_labels[:-1]
 
     # Stack the binary masks for each class
+    
+# =============================================================================
+#     # tf.equal supports brodcasting
+#     # it returns true for all the places where it matches the class label
+#     # this is done for all the classes
+# =============================================================================
     labels_2d = list(map(lambda x: tf.equal(annotation_tensor, x), valid_entries_class_labels))
 
     # Perform the merging of all of the binary masks into one matrix
@@ -124,7 +130,10 @@ def get_valid_entries_indices_from_annotation_batch(annotation_batch_tensor, cla
     # them for trainig to avoid confusing the model
     valid_labels_mask = tf.not_equal(annotation_batch_tensor,
                                      mask_out_class_label)
-
+    
+# =============================================================================
+#     # tf.where returns coordinates of the true elements
+# =============================================================================
     valid_labels_indices = tf.where(valid_labels_mask)
 
     return tf.to_int32(valid_labels_indices)
@@ -157,7 +166,10 @@ def get_valid_logits_and_labels(annotation_batch_tensor,
     (valid_labels_batch_tensor, valid_logits_batch_tensor) : Two Tensors of size (num_valid_eintries, num_classes).
         Tensors that represent valid labels and logits.
     """
-
+    
+# =============================================================================
+#     # to make the annotation_batch_tensor match the "logits_batch_tensor" dimensions
+# =============================================================================
     labels_batch_tensor = get_labels_from_annotation_batch(annotation_batch_tensor=annotation_batch_tensor,
                                                            class_labels=class_labels)
 
