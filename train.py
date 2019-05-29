@@ -210,3 +210,43 @@ restorer = tf.train.Saver(variables_to_restore)
 saver = tf.train.Saver()
 
 current_best_val_loss = np.inf
+
+
+# =============================================================================
+# # creating tf session
+# =============================================================================
+
+with tf.Session() as sess:
+    
+    # creating tb summary writer
+    train_writer = tf.summary.FileWriter(LOG_FOLDER+'/train',sess.graph)
+    val_writer = tf.summary.FileWriter(LOG_FOLDER+'/val')
+    
+    # initializing variables
+    sess.run(tf.global_variables_initializer)
+    sess.run(tf.local_variables_initializer)
+    
+    # loading resnet checkpoints
+    try:
+        restorer.restore(sess,'./resnet/checkpoints/'+args.resnet_model+'.ckpt')
+        print("Model checkpoints for "+args.resnet_model+" restored !!")
+        
+    except FileNotFoundError:
+        print("Resnet checkpoints not found. Please download ")
+        
+    
+    # getting the string handles for different datasets 
+    training_handle = sess.run(training_iterator.string_handle())
+    validation_handle = sess.run(validation_iterator.string_handle())
+    
+    
+    #initialising training_iterator
+    sess.run(training_iterator.initializer)
+    
+    validation_running_loss = []
+    
+    train_steps_before_eval =100
+    validation_steps = 20
+    
+    
+    
