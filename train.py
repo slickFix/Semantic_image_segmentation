@@ -192,7 +192,7 @@ tf.summary.scalar('miou',miou)
 # =============================================================================
 
 # merging tensorboard summaries
-mereged_summary_op = tf.summary.merge_all()
+merged_summary_op = tf.summary.merge_all()
 
 process_str_pid = str(os.getpgid())
 LOG_FOLDER = os.path.join(LOG_FOLDER,process_str_pid)
@@ -243,10 +243,79 @@ with tf.Session() as sess:
     #initialising training_iterator
     sess.run(training_iterator.initializer)
     
+    # variables declaration
     validation_running_loss = []
     
     train_steps_before_eval =100
     validation_steps = 20
     
+    while True:
+        
+        training_average_loss = 0
+        
+        # training loop
+        for i in range(train_steps_before_eval): # no of batches run before evaluation
+            _,global_step_val,train_loss,tb_summary = sess.run([train_step,global_step,loss,merged_summary_op],\
+                                                               feed_dict={is_training_tf:True,\
+                                                                          handle:training_handle})
+            training_average_loss+=train_loss
+            
+            if i%10==0:
+                train_writer.add_summary(tb_summary,global_step=global_step_val)
+                
+        training_average_loss /= train_steps_before_eval
+        
+        
+        # at the end of each train interval, running validation
+        sess.run(validation_iterator.initializer)
+        
+        validation_average_loss = 0
+        validation_average_miou = 0
+        
+        # validation loop
+        for i in range(validation_steps):
+            
+            val_loss,tb_summary, _ = sess.run([loss,merged_summary_op,update_op],
+                                              feed_dict={handle:validation_handle,
+                                                         is_training_tf:False})
+            
+            validation_average_loss+=val_loss
+            validation_average_miou+=sess.run(miou)
+            
+        validation_average_loss/=validation_steps
+        validation_average_miou/=validation_steps
+        
+        # Finding the global validation average loss
+        validation_running_loss.append(validation_average_loss)
+        validation_global_loss = np.mean(validation_running_loss)        
+        
+        val_writer.add_summary(tb_summary,global_step=global_step_val)
+        
+        
+        # saving the model parameters if validation_global_loss < current_best_val_loss
+        if validation_global_loss<current_best_val_loss:
+            
+            # saving the variables to the disk
+            save_path = saver.save(sess,LOG_FOLDER+'/save'+'/model.ckpt')
+            
+            print("Model checkpoint written! Best average loss: ",validation_global_loss)
+            
+            # updating the metadata and saving it
+            current_best_val_loss = validation_global_loss
+
+            args.current_best_val_loss = str(current_best_val_loss)
+        
+            with open(LOG_FOLDER+'/save/'+'data.json','w') as fp:
+                json.dump(args.__dict__,fp,sort_keys=True,indent=4)
+                
+        
+        print('Global step : ',global_step_val,'\tAverage train loss : ',training_average_loss,'\tGlobal Validation avg loss : ',validation_global_loss,'\tMIoU : ',validation_average_miou)
+        
+    train_writer.close()
+            
     
+      
+    
+    
+            
     
