@@ -18,7 +18,7 @@ from preprocessing.read_data import download_resnet_checkpoint_if_necessary,\
                                     distort_randomly_image_color,random_flip_image_and_annotation,\
                                     scale_image_with_crop_padding
                                     
-from preprocessing import training
+from preprocessing import training_util
 
 
 # =============================================================================
@@ -141,15 +141,38 @@ validation_iterator = validation_dataset.make_initializable_iterator()
 
 is_training_tf = tf.placeholder(tf.bool,shape=[])
 
+# logits dimension -> (batch_size, width, height, num_classes)
 logits_tf = tf.cond(is_training_tf,true_fn=lambda:network.deeplab_v3(batch_images_tf,args,is_training=True,reuse = False),
                     false_fn=lambda:network.deeplab_v3(batch_images_tf,args,is_training=False,reuse=True))
 
 
 # get valid logits and labels (factor the 255 padded mask for cross enetropy)
-valid_labels_batch_tf,valid_logits_batch_tf = training.get_valid_logits_and_labels(
+valid_labels_batch_tf,valid_logits_batch_tf = training_util.get_valid_logits_and_labels(
         annotation_batch_tensor= batch_labels_tf,
         logits_batch_tensor = logits_tf,
         class_labels=class_labels)
 
 
+# =============================================================================
+# # loss
+# =============================================================================
+cross_entropy = tf.nn.softmax_cross_entropy_with_logits_v2(logits=valid_logits_batch_tf,labels=valid_labels_batch_tf)
+loss = tf.reduce_mean(cross_entropy)
 
+tf.summary.scalar('loss',loss)
+
+# =============================================================================
+# # prediction
+# =============================================================================
+
+prediction_tf = tf.argmax(logits_tf,axis=3)
+
+# =============================================================================
+# # optimizer
+# =============================================================================
+
+with tf.variable_scope('optimizer_vars'):
+    global_step = tf.Variable(0,trainable=False)
+    optimizer = tf.train.AdamOptimizer(learning_rate=args.learning_rate)
+    train_step = tf.contrib.slim.learning.create_train_op(loss,optimizer,global_step=global_step)
+    
