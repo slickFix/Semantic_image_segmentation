@@ -13,7 +13,10 @@ FINAL TRAINING IMAGES:-
 End of TfRecord. Total images written:  7138
 
 FINAL VALIDATION IMAGES:-
-End of TfRecord. Total images written:  784
+End of TfRecord. Total images written:  389
+
+FINAL TEST IMAGES:-
+End of TfRecord. Total images written:  395
 
 
 LIST OF TRAINING IMAGES NOT FOUND(probably in original VOC dataset):-
@@ -315,24 +318,6 @@ File image:  2007_003431  not found!!
 
 LIST OF VALIDATION IMAGES NOT FOUND(probably in original VOC dataset):-
 
-
-File image:  2007_004769  not found!!
-File image:  2007_007930  not found!!
-File image:  2007_000170  not found!!
-File image:  2007_007230  not found!!
-File image:  2007_006530  not found!!
-File image:  2007_002368  not found!!
-File image:  2007_008821  not found!!
-File image:  2007_002105  not found!!
-File image:  2007_000121  not found!!
-File image:  2007_005368  not found!!
-File image:  2007_000648  not found!!
-File image:  2007_003565  not found!!
-File image:  2007_008571  not found!!
-File image:  2007_009607  not found!!
-File image:  2007_002896  not found!!
-File image:  2007_007878  not found!!
-File image:  2007_008714  not found!!
 File image:  2007_001764  not found!!
 File image:  2007_007154  not found!!
 File image:  2007_008948  not found!!
@@ -359,3 +344,22 @@ File image:  2007_006944  not found!!
 File image:  2007_001225  not found!!
 
 
+LIST OF TEST IMAGES NOT FOUND(probably in original VOC dataset):-
+
+File image:  2007_004769  not found!!
+File image:  2007_007930  not found!!
+File image:  2007_000170  not found!!
+File image:  2007_007230  not found!!
+File image:  2007_006530  not found!!
+File image:  2007_002368  not found!!
+File image:  2007_008821  not found!!
+File image:  2007_002105  not found!!
+File image:  2007_000121  not found!!
+File image:  2007_005368  not found!!
+File image:  2007_000648  not found!!
+File image:  2007_003565  not found!!
+File image:  2007_008571  not found!!
+File image:  2007_009607  not found!!
+File image:  2007_002896  not found!!
+File image:  2007_007878  not found!!
+File image:  2007_008714  not found!!
