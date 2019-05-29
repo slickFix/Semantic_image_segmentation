@@ -79,7 +79,8 @@ print('Total number of training images',len(images_filename_list))
 # shuffling array and separating 10% for validation
 np.random.seed(2019)
 np.random.shuffle(images_filename_list)
-val_images_filename_list = images_filename_list[:int(0.10*len(images_filename_list))]
+test_images_filename_list = images_filename_list[:int(0.05*len(images_filename_list))]
+val_images_filename_list = images_filename_list[int(0.05*len(images_filename_list)):int(0.10*len(images_filename_list))]
 train_images_filename_list = images_filename_list[int(0.10*len(images_filename_list)):]
 
 TRAIN_DATASET_DIR = './tfrecords'
@@ -88,9 +89,11 @@ if not os.path.exists(TRAIN_DATASET_DIR):
     
 TRAIN_FILE = 'train.tfrecords'
 VAL_FILE = 'validation.tfrecords'
+TEST_FILE = 'test.tfrecords'
 
 train_writer = tf.python_io.TFRecordWriter(os.path.join(TRAIN_DATASET_DIR,TRAIN_FILE))
 val_writer = tf.python_io.TFRecordWriter(os.path.join(TRAIN_DATASET_DIR,VAL_FILE))
+test_writer = tf.python_io.TFRecordWriter(os.path.join(TRAIN_DATASET_DIR,TEST_FILE))
 
 # =============================================================================
 # # defining utility functions
@@ -163,3 +166,5 @@ create_tfrecord_dataset(train_images_filename_list,train_writer)
 # create validation dataset
 create_tfrecord_dataset(val_images_filename_list,val_writer)
 
+# create test dataset
+create_tfrecord_dataset(test_images_filename_list,test_writer)
