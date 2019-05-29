@@ -176,3 +176,37 @@ with tf.variable_scope('optimizer_vars'):
     optimizer = tf.train.AdamOptimizer(learning_rate=args.learning_rate)
     train_step = tf.contrib.slim.learning.create_train_op(loss,optimizer,global_step=global_step)
     
+    
+# =============================================================================
+# # Accuracy calculation    
+# =============================================================================
+
+miou,update_op = tf.contrib.metrics.streaming_mean_iou(tf.arg_max(valid_logits_batch_tf,axis=1),
+                                                       tf.arg_max(valid_labels_batch_tf,axis=1),
+                                                       num_classes=args.number_of_classes)
+
+tf.summary.scalar('miou',miou)
+
+# =============================================================================
+# # Tensorboard log dir, saver and resnet model restore
+# =============================================================================
+
+# merging tensorboard summaries
+mereged_summary_op = tf.summary.merge_all()
+
+process_str_pid = str(os.getpgid())
+LOG_FOLDER = os.path.join(LOG_FOLDER,process_str_pid)
+
+# creating tensorboard log folder if it doesn't exist
+if not os.path.exists(LOG_FOLDER):
+    print('Creating tensorboard log folder : ',LOG_FOLDER)
+    os.mkdirs(LOG_FOLDER)
+    
+# creating restorer of (simple) resnet model and saver of current model
+variables_to_restore = tf.contrib.slim.get_variables_to_restore(exclude=[args.resnet_model + "/logits", "optimizer_vars",
+                                                              "DeepLab_v3/ASPP_layer", "DeepLab_v3/logits"])
+
+restorer = tf.train.Saver(variables_to_restore)    
+saver = tf.train.Saver()
+
+current_best_val_loss = np.inf
