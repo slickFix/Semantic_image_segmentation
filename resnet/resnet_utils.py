@@ -1,5 +1,7 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 """
 Created on Tue May 28 10:20:30 2019
 
@@ -36,9 +38,7 @@ each block, instead of subsampling the input activations in the first residual
 unit of each block. The two implementations give identical results but our
 implementation is more memory efficient.
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+
 
 import collections
 import tensorflow as tf

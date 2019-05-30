@@ -1,5 +1,7 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 """
 Created on Tue May 28 09:54:00 2019
 
@@ -44,9 +46,7 @@ ResNet-101 for semantic segmentation into 21 classes:
                                                 global_pool=False,
                                                 output_stride=16)
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+
 
 import tensorflow as tf
 
