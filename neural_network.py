@@ -59,7 +59,7 @@ def deeplab_v3(inputs,args,is_training,reuse):
     inputs = inputs-[_R_MEAN,_G_MEAN,_B_MEAN]
     
     # inputs shape = original shape [batch,513,513,3]
-    with slim.arg_scope(resnet_utils.resnet_arg_scope(args.l2_regualrizer,is_training,
+    with slim.arg_scope(resnet_utils.resnet_arg_scope(args.l2_regularizer,is_training,
                                                       args.batch_norm_decay,
                                                       args.batch_norm_epsilon)):
         
@@ -72,6 +72,7 @@ def deeplab_v3(inputs,args,is_training,reuse):
         _,end_points = resnet(inputs,args.number_of_classes,
                               is_training=is_training,
                               global_pool = False,
+                              spatial_squeeze=False,
                               output_stride = args.output_stride,
                               reuse = reuse)
         
