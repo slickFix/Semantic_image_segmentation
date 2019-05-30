@@ -54,4 +54,47 @@ class Dotdict(dict):
 
 args = Dotdict(args)    
 
+# =============================================================================
+# # list of classes
+# =============================================================================
+
+# 0=background
+# 1=aeroplane
+# 2=bicycle
+# 3=bird
+# 4=boat
+# 5=bottle
+# 6=bus
+# 7=car
+# 8=cat
+# 9=chair
+# 10=cow
+# 11=diningtable
+# 12=dog
+# 13=horse
+# 14=motorbike
+# 15=person
+# 16=potted plant
+# 17=sheep
+# 18=sofa
+# 19=train
+# 20=tv/monitor
+# 255=unknown
+
+class_labels = [v for v in range((args.number_of_classes+1))]
+class_labels[-1] = 255
+
+# =============================================================================
+# # test data preprocessing
+# =============================================================================
+
+TEST_DATASET_DIR = './dataset/tfrecords'
+TEST_FILE = 'test.tfrecords'
+
+test_filenames = [os.path.join(TEST_DATASET_DIR,TEST_FILE)]
+test_dataset = tf.data.TFRecordDataset(test_filenames)
+test_dataset = test_dataset.map(tf_record_parser)  #parse the record into tensors
+test_dataset = test_dataset.map(lambda image,annotation,image_shape:scale_image_with_crop_padding(image,annotation,image_shape,args.crop_size))
+test_dataset = test_dataset.shuffle(buffer_size=500)
+test_dataset = test_dataset.batch(args.batch_size)
 
