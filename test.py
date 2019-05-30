@@ -41,7 +41,7 @@ model_name = str(input_args.model_id)
 # # restoring train file arguments 
 # =============================================================================
 
-log_folder = './tboard_logs'
+log_folder = './tensor_board_logs'
 
 with open(log_folder+'/'+model_name+'/train/data.json','r') as fp:
     args = json.load(fp)
