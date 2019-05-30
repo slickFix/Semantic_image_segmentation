@@ -97,7 +97,7 @@ def rescale_image_and_annotation_by_factor(image,annotation,image_shape,min_scal
     
     scale = tf.random_uniform(shape = [1],minval=min_scale,maxval=max_scale)
     
-    scaled_input_shape = tf.int32(tf.round(input_shape_float*scale))
+    scaled_input_shape = tf.to_int32(tf.round(input_shape_float*scale))
     
     image =tf.image.resize_images(image,scaled_input_shape,method=tf.image.ResizeMethod.BILINEAR)
     
@@ -131,7 +131,7 @@ def distort_randomly_image_color(image_tensor,annotation_tensor,image_shape):
     
     
     distorted_image = apply_with_random_selector(img_float_zero_one_range,
-                                                 lambda x,ordering: distort_color(x,ordering,fast_mode=fast_mode),num_classes=4)
+                                                 lambda x,ordering: distort_color(x,ordering,fast_mode=fast_mode),num_cases=4)
     
     img_float_distorted_original_range = distorted_image * 255
     
