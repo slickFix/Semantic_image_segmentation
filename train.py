@@ -66,14 +66,14 @@ train_arg.add_argument('--output_stride',type=int,default=16,help='output stride
 train_arg.add_argument('--gpu_id',type = int,default=0,help = 'id of the gpu to be used')
 train_arg.add_argument('--crop_size',type = int,default=513,help='image cropsize')
 train_arg.add_argument('--resnet_model',default = 'resnet_v2_50',choices = ['resnet_v2_50','resnet_v2_101','resnet_v2_152','resnet_v2_200'],help='resnet model to use as feature extractor.')
-train_arg.add_argument('--batch_size',type = int,defautl=8,help = 'batch size for network to train')
+train_arg.add_argument('--batch_size',type = int,default=8,help = 'batch size for network to train')
 
 environ_arg= parser.add_argument_group('Environment parameter')
 
 environ_arg.add_argument('--current_best_val_loss',type=int,default=99999,help='best validation loss value')
 environ_arg.add_argument('--accumulated_validation_miou',type=int,default=0,help = 'accumulated validation intersection over union')
 
-args = parser.parse_arg()
+args = parser.parse_args()
 
 # =============================================================================
 # # defining global varialbes
@@ -173,7 +173,7 @@ prediction_tf = tf.argmax(logits_tf,axis=3)
 
 with tf.variable_scope('optimizer_vars'):
     global_step = tf.Variable(0,trainable=False)
-    optimizer = tf.train.AdamOptimizer(learning_rate=args.learning_rate)
+    optimizer = tf.train.AdamOptimizer(learning_rate=args.starting_learning_rate)
     train_step = tf.contrib.slim.learning.create_train_op(loss,optimizer,global_step=global_step)
     
     
@@ -181,8 +181,8 @@ with tf.variable_scope('optimizer_vars'):
 # # Accuracy calculation    
 # =============================================================================
 
-miou,update_op = tf.contrib.metrics.streaming_mean_iou(tf.arg_max(valid_logits_batch_tf,axis=1),
-                                                       tf.arg_max(valid_labels_batch_tf,axis=1),
+miou,update_op = tf.contrib.metrics.streaming_mean_iou(tf.argmax(valid_logits_batch_tf,axis=1),
+                                                       tf.argmax(valid_labels_batch_tf,axis=1),
                                                        num_classes=args.number_of_classes)
 
 tf.summary.scalar('miou',miou)
@@ -194,13 +194,13 @@ tf.summary.scalar('miou',miou)
 # merging tensorboard summaries
 merged_summary_op = tf.summary.merge_all()
 
-process_str_pid = str(os.getpgid())
+process_str_pid = str(os.getpid())
 LOG_FOLDER = os.path.join(LOG_FOLDER,process_str_pid)
 
 # creating tensorboard log folder if it doesn't exist
 if not os.path.exists(LOG_FOLDER):
     print('Creating tensorboard log folder : ',LOG_FOLDER)
-    os.mkdirs(LOG_FOLDER)
+    os.makedirs(LOG_FOLDER)
     
 # creating restorer of (simple) resnet model and saver of current model
 variables_to_restore = tf.contrib.slim.get_variables_to_restore(exclude=[args.resnet_model + "/logits", "optimizer_vars",
@@ -223,8 +223,8 @@ with tf.Session() as sess:
     val_writer = tf.summary.FileWriter(LOG_FOLDER+'/val')
     
     # initializing variables
-    sess.run(tf.global_variables_initializer)
-    sess.run(tf.local_variables_initializer)
+    sess.run(tf.global_variables_initializer())
+    sess.run(tf.local_variables_initializer())
     
     # loading resnet checkpoints
     try:
