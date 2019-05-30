@@ -11,7 +11,7 @@ import tensorflow as tf
 import numpy as np
 import os
 import json
-import network
+import neural_network
 
 from preprocessing.read_data import download_resnet_checkpoint_if_necessary,\
                                     tf_record_parser,rescale_image_and_annotation_by_factor,\
@@ -142,8 +142,8 @@ validation_iterator = validation_dataset.make_initializable_iterator()
 is_training_tf = tf.placeholder(tf.bool,shape=[])
 
 # logits dimension -> (batch_size, width, height, num_classes)
-logits_tf = tf.cond(is_training_tf,true_fn=lambda:network.deeplab_v3(batch_images_tf,args,is_training=True,reuse = False),
-                    false_fn=lambda:network.deeplab_v3(batch_images_tf,args,is_training=False,reuse=True))
+logits_tf = tf.cond(is_training_tf,true_fn=lambda:neural_network.deeplab_v3(batch_images_tf,args,is_training=True,reuse = False),
+                    false_fn=lambda:neural_network.deeplab_v3(batch_images_tf,args,is_training=False,reuse=True))
 
 
 # get valid logits and labels (factor the 255 padded mask for cross enetropy)
