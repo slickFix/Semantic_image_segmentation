@@ -20,7 +20,7 @@ import json
 from preprocessing.read_data import tf_record_parser,scale_image_with_crop_padding
 from preprocessing import training_util
 
-from metrics import *
+from metric import *
 
 plt.interactive(False)
 
@@ -138,3 +138,83 @@ saver  = tf.train.Saver()
 
 train_folder = os.path.join(log_folder,model_name,'train')
 
+# =============================================================================
+# # creating tf.Session()
+# =============================================================================
+
+with tf.Session() as sess:
+    
+    # initializing variables
+    sess.run(tf.global_variables_initializer())
+    sess.run(tf.local_variables_initializer())
+    
+    # restore variables from disk
+    saver.restore(sess,os.path.join(train_folder,'model.ckpt'))
+    print("model ",model_name,' restored')
+    
+    mean_IoU = []
+    mean_pixel_acc = []
+    mean_freq_weighted_IU = [] 
+    mean_acc = []
+    
+    while True:
+        try:
+            batch_images_np,batch_labels_np,batch_shapes_np,batch_predictions_np,tb_summary = \
+                sess.run([batch_images_tf,batch_labels_tf,batch_shapes_tf,predictions_tf,merged_summary_op])
+            
+            heights,widths = batch_shapes_np
+            
+            
+            for i in range(batch_predictions_np.shape[0]):            # looping through the images in the batch and extracting the valid areas from the tensors
+
+                
+                label_image = batch_labels_np[i]
+                pred_image = batch_predictions_np[i]
+                actual_image = batch_images_np[i]
+                
+                indices = np.where(label_image!=255)
+                
+                label_image = label_image[indices]
+                pred_image = pred_image[indices]
+                actual_image = actual_image[indices]
+                
+                if label_image.shape[0] == 513*513:
+                    label_image = np.reshape(label_image,(513,513))
+                    pred_image = np.reshape(pred_image,(513,513))
+                    actual_image = np.reshape(actual_image,(513,513,3))
+                    
+                else:
+                    label_image = np.reshape(label_image,(heights[i],widths[i]))
+                    pred_image = np.reshape(pred_image,(heights[i],widths[i]))
+                    actual_image = np.reshape(actual_image,(heights[i],widths[i],3))
+                    
+                pix_acc = pixel_accuracy(pred_image,label_image)
+                m_acc = mean_accuracy(pred_image,label_image)
+                IoU = mean_IU(pred_image,label_image)
+                frequency_weighted_IU = frequency_weighted_IU(pred_image,label_image)
+                
+                
+                mean_pixel_acc.append(pix_acc)
+                mean_acc.append(m_acc)
+                mean_IoU.append(IoU)
+                mean_freq_weighted_IU.append(frequency_weighted_IU)
+                
+                
+                f,(ax1,ax2,ax3) = plt.subplots(1,3,figsize=(8,8))
+                
+                ax1.imshow(actual_image.astype(np.uint8))
+                ax2.imshow(label_image)
+                ax3.imshow(pred_image)
+                plt.show()
+                
+        except tf.errors.OutOfRangeError:
+            break
+        
+    print("Mean pixel accuracy:", np.mean(mean_pixel_acc))
+    print("Mean accuraccy:", np.mean(mean_acc))
+    print("Mean IoU:", np.mean(mean_IoU))
+    print("Mean frequency weighted IU:", np.mean(mean_freq_weighted_IU))
+                
+            
+            
+    
