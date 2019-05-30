@@ -2,3 +2,4 @@
 /dataset/bench*
 /dataset/tfrecords
 /preprocessing/__pyca*
+__pyc*
