@@ -98,3 +98,43 @@ test_dataset = test_dataset.map(lambda image,annotation,image_shape:scale_image_
 test_dataset = test_dataset.shuffle(buffer_size=500)
 test_dataset = test_dataset.batch(args.batch_size)
 
+# =============================================================================
+# # creating dataset iterator 
+# =============================================================================
+
+iterator = test_dataset.make_one_shot_iterator()
+batch_images_tf,batch_labels_tf,batch_shapes_tf = iterator.get_next()
+
+# =============================================================================
+# # forward propogation
+# =============================================================================
+
+logits_tf = neural_network.deeplab_v3(batch_images_tf,args,is_training=False,reuse=False)
+
+valid_labels_batch_tf,valid_logits_batch_tf = training_util.get_valid_logits_and_labels(
+        annotation_batch_tensor=batch_labels_tf,
+        logits_batch_tensor=logits_tf,
+        class_labels = class_labels)
+
+# =============================================================================
+# # loss definition
+# =============================================================================
+
+cross_entropy = tf.nn.softmax_cross_entropy_with_logits_v2(labels=valid_labels_batch_tf,logits=valid_logits_batch_tf)
+loss = tf.reduce_mean(cross_entropy)
+
+tf.summary.scalar('test_loss',loss)
+
+# =============================================================================
+# # defining prediction and prediction probabilities
+# =============================================================================
+
+predictions_tf = tf.argmax(logits_tf,axis = 3)
+probabilites_tf = tf.nn.softmax(logits_tf)
+
+
+merged_summary_op = tf.summary.merge_all()
+saver  = tf.train.Saver()
+
+train_folder = os.path.join(log_folder,model_name,'train')
+
