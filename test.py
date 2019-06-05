@@ -43,7 +43,7 @@ model_name = str(input_args.model_id)
 
 log_folder = './tensor_board_logs'
 
-with open(log_folder+'/'+model_name+'/train/data.json','r') as fp:
+with open(log_folder+'/'+model_name+'/save/data.json','r') as fp:
     args = json.load(fp)
 
 class Dotdict(dict):
@@ -136,7 +136,7 @@ probabilites_tf = tf.nn.softmax(logits_tf)
 merged_summary_op = tf.summary.merge_all()
 saver  = tf.train.Saver()
 
-train_folder = os.path.join(log_folder,model_name,'train')
+save_folder = os.path.join(log_folder,model_name,'save')
 
 # =============================================================================
 # # creating tf.Session()
@@ -149,7 +149,7 @@ with tf.Session() as sess:
     sess.run(tf.local_variables_initializer())
     
     # restore variables from disk
-    saver.restore(sess,os.path.join(train_folder,'model.ckpt'))
+    saver.restore(sess,os.path.join(save_folder,'model.ckpt'))
     print("model ",model_name,' restored')
     
     mean_IoU = []
