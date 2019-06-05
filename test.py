@@ -191,13 +191,13 @@ with tf.Session() as sess:
                 pix_acc = pixel_accuracy(pred_image,label_image)
                 m_acc = mean_accuracy(pred_image,label_image)
                 IoU = mean_IU(pred_image,label_image)
-                frequency_weighted_IU = frequency_weighted_IU(pred_image,label_image)
+                freq_weighted_IU = frequency_weighted_IU(pred_image,label_image)
                 
                 
                 mean_pixel_acc.append(pix_acc)
                 mean_acc.append(m_acc)
                 mean_IoU.append(IoU)
-                mean_freq_weighted_IU.append(frequency_weighted_IU)
+                mean_freq_weighted_IU.append(freq_weighted_IU)
                 
                 
                 f,(ax1,ax2,ax3) = plt.subplots(1,3,figsize=(8,8))
