@@ -31,7 +31,7 @@ plt.interactive(False)
 parser = argparse.ArgumentParser()
 
 envrag = parser.add_argument_group("Eval params")
-envrag.add_argument("--model_id",default=2019,type=int,help="Model id name  to be loaded ")
+envrag.add_argument("--model_id",default=241,type=int,help="Model id name  to be loaded ")
 input_args = parser.parse_args()
 
 model_name = str(input_args.model_id)
@@ -206,6 +206,7 @@ with tf.Session() as sess:
                 ax2.imshow(label_image)
                 ax3.imshow(pred_image)
                 plt.show()
+                
                 
         except tf.errors.OutOfRangeError:
             break
