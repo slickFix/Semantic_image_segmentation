@@ -12,6 +12,7 @@ import numpy as np
 import os
 import json
 import neural_network
+import datetime as dt
 
 from preprocessing.read_data import download_resnet_checkpoint_if_necessary,\
                                     tf_record_parser,rescale_image_and_annotation_by_factor,\
@@ -249,6 +250,9 @@ with tf.Session() as sess:
     train_steps_before_eval =100
     validation_steps = 20
     
+    st_time = dt.datetime.now()
+    print("Training start time : ",str(st_time))
+
     while True:
         
         training_average_loss = 0
@@ -310,7 +314,11 @@ with tf.Session() as sess:
                 
         
         print('Global step : ',global_step_val,'\tAverage train loss : ',training_average_loss,'\tGlobal Validation avg loss : ',validation_global_loss,'\tMIoU : ',validation_average_miou)
-        
+        loop_end_time = dt.datetime.now()
+        print("Total training time elapsed : ",str(loop_end_time-st_time))
+        if(loop_end_time-st_time) > dt.timedelta(hours=16):
+          print("Total training time 16 hours completed !!")
+          break
     train_writer.close()
             
     
